@@ -71,16 +71,14 @@ def refresh_internet_settings():
 
 def switch_proxy():
     selected_proxy = proxy_listbox.get(tk.ACTIVE)
-    if selected_proxy == "无代理":
+    if selected_proxy == "移除代理":
         disable_proxy()
     else:
         set_system_proxy(selected_proxy)
 
 
 def add_proxy():
-    new_proxy = simpledialog.askstring(
-        "添加代理", "输入新的代理地址 (格式: host:port):"
-    )
+    new_proxy = simpledialog.askstring("添加代理", "输入新的代理地址 (格式: host:port)")
     if new_proxy:
         config["proxies"].append(new_proxy)
         update_proxy_listbox()
@@ -99,7 +97,7 @@ def edit_proxy():
     selected_proxy = proxy_listbox.get(tk.ACTIVE)
     if selected_proxy:
         new_proxy = simpledialog.askstring(
-            "编辑代理", "编辑代理地址:", initialvalue=selected_proxy
+            "编辑代理", "编辑代理地址", initialvalue=selected_proxy
         )
         if new_proxy:
             index = config["proxies"].index(selected_proxy)
@@ -112,7 +110,7 @@ def update_proxy_listbox():
     proxy_listbox.delete(0, tk.END)
     for proxy in config["proxies"]:
         proxy_listbox.insert(tk.END, proxy)
-    proxy_listbox.insert(tk.END, "无代理")  # 添加禁用代理的选项
+    proxy_listbox.insert(tk.END, "移除代理")  # 添加禁用代理的选项
 
 
 def view_current_proxy():
@@ -124,12 +122,12 @@ def view_current_proxy():
 config = load_config()
 
 app = tk.Tk()
-app.title("代理管理器")
+app.title("HttpProxySwitcher")
 
 frame = tk.Frame(app)
 frame.pack(pady=10)
 
-proxy_listbox = tk.Listbox(frame, selectmode=tk.SINGLE, width=50)
+proxy_listbox = tk.Listbox(frame, selectmode=tk.SINGLE, width=40)
 proxy_listbox.pack(side=tk.LEFT, padx=10)
 
 scrollbar = tk.Scrollbar(frame)
@@ -154,6 +152,19 @@ delete_button.pack(side=tk.LEFT, padx=5)
 
 switch_button = tk.Button(app, text="切换代理", command=switch_proxy)
 switch_button.pack(pady=10)
+
+info_label = tk.Label(
+    app,
+    text="HttpProxySwitcher v1.0 2024/07/07\nCopyright 2024 earthjasonlin\n保留所有权利。\n本程序仅作为交流学习使用",
+    justify="center",
+    anchor="center",
+)
+info_label.pack(pady=10, padx=20, fill="x")
+
+# 自动调整窗口大小
+app.update_idletasks()
+app.minsize(app.winfo_reqwidth(), app.winfo_reqheight())
+app.resizable(False, False)
 
 # 更新列表框
 update_proxy_listbox()
