@@ -56,7 +56,7 @@ def disable_proxy():
     try:
         winreg.SetValueEx(INTERNET_SETTINGS, "ProxyEnable", 0, winreg.REG_DWORD, 0)
         refresh_internet_settings()
-        config["current_proxy"] = "无代理"
+        config["current_proxy"] = "none"
         save_config(config)
         messagebox.showinfo("代理设置", "代理已禁用")
     except Exception as e:
@@ -168,5 +168,11 @@ app.resizable(False, False)
 
 # 更新列表框
 update_proxy_listbox()
+
+if config["current_proxy"]:
+    if config["current_proxy"] == "无代理":
+        disable_proxy()
+    else:
+        set_system_proxy(config["current_proxy"])
 
 app.mainloop()
